@@ -1,0 +1,86 @@
+TODO LIST:
+
+change all the functions at login.html to do with creating & joining
+new users & rooms to form event listeners so the page doesnt refresh,
+page refresh causes socket disconnection from server and ruins system 
+that is based around client ID's as it has to generate a new one.
+DONE 
+
+fix username validification, this code is called at server.js but function
+from userTools.js & roomTools.js not working.
+DONE
+
+get the rooms working, todo this:
+    fix login so that when username selected, it gets locked in,
+    same with room name,
+
+    then the user clicks the actual submit button for the form which sends the data -
+    to another page which is /rooms
+
+    using:
+
+    app.get('/rooms/:room', (req, res) => {
+        room = req.params.room;
+        
+    })
+
+    now what I should do is initialise a server at rooms and then when 
+    a message is sent at that route, being the room, then it is handled at that page
+    and emited to other room recipients
+
+DONE 
+
+fix data passing for form verification, data is passing however that values are null,
+values on user end are also null so there is a user end error wen fetching data from form.
+
+DONE
+
+Only allow form verification request if all form fields have values,
+this can be done using:
+
+required="required" attribute on input element
+Or I could just use an if/else statement to check if the fields have values.
+
+update:
+    required="required" doesnt work as the form doesnt auto submit until the client 
+    has recieved verification from the server that the values are allowed, so Im going
+    to use if/if else statements
+
+DONE (check) DONE
+
+alter userTools module so that the activeUsers array has user objects that contain
+users socket.id and users username. order will be {id, username}.
+this can only be done after the client recieves the confirmation packet from server
+and the data is sent to the new route /rooms as redirecting causes page disconnection
+and reconnection therefore creating a new socket.id, there is no need to worry about
+new socket.id's after this as there are no other routes of the website that require it. (atleast for now )
+
+DONE
+
+Update verifyFormCreate logic (at server side) so that it is the same as verifyFormJoin,
+except of course the fact that the room exist logic must by different.
+
+DONE
+
+fix UI on index.html and finish UI on login.html ( edit index to look like new Login.html UI)
+┖→ add bars on side of app, this helps with more dynamic page view on homepage ('/'),
+   I am blocking overflow-x so that only Y scrolling is allowed, page info such as about,
+   create info, contact links etc. will scroll down the page.
+
+DONE 
+
+add an option for dark & light mode 
+
+WORKING ON
+
+
+make scrollable UL for the messages, partially done, need to  figure out the right 
+flex usages to make the UL fill all available space without overlapping the text form.
+(didnt of using flex howevr I solved the issue)
+DONE
+
+fix the add user and remove user events, running into issues with redirects causing new socket.id's
+
+adding commands such as kick, change colour, etc.
+
+CANCELLED this was too hard using regex cant be bothered 

@@ -1,0 +1,156 @@
+body { 
+    overflow: hidden;
+    background-color: rgb(24, 24, 24);
+    margin: 0;
+    /*padding-bottom: 3rem; */
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+}
+#schemeBtn { 
+    font-family: 'Source Sans Pro', sans-serif;
+    background: #333; 
+    border: none; 
+    padding: 1 1rem; 
+    margin: 0.4rem 0.4rem;
+    border-radius: 3px; 
+    outline: none; 
+    font-size: 14px;
+    height: 1.95rem;
+    color: #fff; 
+
+}
+
+#schemeBtn:hover {
+    font-size: 13.5px;
+    border: 1px solid rgb(0, 166, 255);
+    cursor: pointer;
+}
+
+#container {
+    /*display: flex;
+    flex-direction: column;*/
+    background-color: rgb(39, 39, 39);
+    width: 66%;
+    padding: 0 0 0 0;
+    margin-right: 17%;
+    float: right;
+    height: 100vh;
+    /*max-height: fit-content;*/
+
+}
+
+
+#container > #form { 
+    position: fixed;
+    /*background-color: rgb(233, 233, 233);*/
+    background-color: rgba(24, 24, 24);
+    padding: 0.25rem; 
+    bottom: 0; 
+    width: inherit;
+
+    /*flex: 0 1 3rem;*/
+    display: flex;
+    height: 5.4vh;
+    box-sizing: border-box; 
+    backdrop-filter: blur(10px); 
+
+}
+
+#input { 
+    background-color: rgba(141, 141, 141, 0.522);
+    border: none;
+    padding: 0 1rem; 
+    flex-grow: 1; 
+    border-radius: 2rem; 
+    margin: 0.25rem; 
+}
+
+#input:focus { 
+    outline: none; 
+}
+
+#form > button { 
+    background: #333; 
+    border: none; 
+    padding: 0 1rem; 
+    margin: 0.25rem; 
+    border-radius: 3px; 
+    outline: none; 
+    color: #fff; 
+}
+/*
+#container > #msgWrap {
+    width: 100%;
+    max-height: ;
+    overflow:hidden; 
+    overflow-y:scroll;
+}
+*/
+
+#messages { 
+    flex: 1;
+
+    max-height: 94.5vh;
+    overflow:auto; 
+    overflow-y:scroll;
+    list-style-type: none; 
+    margin: 0; 
+    padding: 0; 
+}
+
+#messages > li { 
+    background-color: rgba(141, 141, 141, 0.522);
+    font-size: smaller;
+    padding: 0.5rem 1rem; 
+    margin: 1vh 1vw; 
+    /*border-left: 3px solid black; */
+    border-radius: 0.4vw;
+    word-wrap: break-word;
+}
+/*
+#messages > li:first-child {
+    margin-top: 0;
+}
+*/
+#messages > .authSelf { 
+    border-left: 3px solid rgb(0, 166, 255);
+}
+
+.authSelf:hover {
+    border-left: 2px solid rgb(0, 166, 255);
+    box-sizing: border-box;
+    /*border: 1px solid rgb(0, 166, 255);*/
+    background: #000000; 
+}
+
+#messages > .authOther {
+    border-left: 3px solid rgb(255, 123, 0);
+}
+
+.authOther:hover {
+    border-left: 3px solid rgb(255, 123, 0);
+    /*border: 1px solid rgb(255, 123, 0);*/
+    background: #838383; 
+}
+
+#messages > .authServer {
+    border-left: 3px solid rgb(30, 255, 0);
+    background-color: black;
+    color: rgb(30, 255, 0);
+}
+
+.authServer:hover {
+    border-left: 3px solid rgb(30, 255, 0);
+    /*border: 1px solid rgb(30, 255, 0);*/
+    background-color: black;
+    color: rgb(30, 255, 0);
+    box-sizing: border-box;
+}
+
+#messages span {
+    float: right;
+}
+
+#messages p {
+    margin: 0;
+}

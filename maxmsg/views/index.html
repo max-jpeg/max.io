@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Max.io-app</title>
+
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+
+  </head>
+
+  <body>
+    <button id='schemeBtn' onclick="toggleScheme()">Lights</button>
+
+    <div id="container">
+
+        <ul id="messages">
+            <li class="authServer">
+                Server: Welcome to the chat!
+            </li>
+    
+        </ul>
+
+        <form id="form" action="">
+
+            <input id="input" autocomplete="off" />
+            <button>Send</button>
+        
+        </form>
+    </div>
+
+
+   
+
+   
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+    <script>
+        var socket = io();
+        var form = document.getElementById("form");
+        var input = document.getElementById("input");
+
+        const params = new URLSearchParams(location.search);
+
+        var currentUser = params.get('user');
+        var currentRoom = params.get('room');
+        var c = params.get('c');
+        
+        /*
+        var light = true;
+        function toggleScheme() {}
+        */
+
+        // this is needed because client can only get socket id on connection!? (wasn't working before and this is what stack overflow told me)
+        
+        socket.on('connect', () => {
+            currentID = socket.id;
+            console.log(currentID);
+            console.log(currentRoom);
+
+            // replaced with init
+            /*
+            socket.emit('myRoom', {currentRoom, c});
+            socket.emit('createUser', currentUser);
+            */
+            socket.emit('init', {currentUser, currentRoom, c});
+        });
+
+        
+        socket.on("userData", (data) => {
+            currentUser = data.user;
+        });
+        
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            if (input.value) {
+                var msgData = {msg: input.value, auth: currentUser, time: moment().format('hh:mm a'), room: currentRoom} //work here on making the packs
+                //                                      ^^^^^^^^^^^^^^^^^
+                // make get name by socket id and make a name prompt that also connects to a db/array/multi data storage.
+                // at getname module.
+                
+
+                socket.emit('chat message', msgData)
+                input.value = '';
+            }
+        });
+
+
+        socket.on('chat message', (msgData) => {
+            var msgElem = document.createElement('li');
+
+            // I have this variable so I dont have to just use msgData items, not really used atm but if there are mods made they can easily be applied
+            var stamp = {auth: msgData.auth, time: msgData.time};
+
+            if (msgData.auth === currentUser) {
+                msgElem.className = "authSelf";
+            }
+            else if (msgData.auth !== currentUser) {
+                msgElem.className = "authOther";
+            }
+
+
+            msgElem.innerHTML = `<p> ${stamp.auth}: ${msgData.msg} <span>${stamp.time}</span></p>`;
+            messages.appendChild(msgElem);
+
+
+
+            items = document.querySelectorAll('li');
+            last  = items[items.length - 1];
+            last.scrollIntoView();
+        
+
+            //messages.scrollTop = messages.scrollHieght;
+            //window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        /*
+        socket.on('disconnect', () => {
+            socket.emit('discon', currentUser);
+        });
+        */
+
+
+         function toggleScheme() {
+            // Obtains an array of all <link>
+            // elements.
+            // Select your element using indexing.
+            var scheme = document.getElementsByTagName('link')[0];
+  
+            // Change the value of href attribute 
+            // to change the css sheet.
+            if (scheme.getAttribute('href') == 'css/light.css') {
+                scheme.setAttribute('href', 'css/dark.css');
+            } else {
+                scheme.setAttribute('href', 'css/light.css');
+            }
+        }
+    </script>
+
+  </body>
+</html>

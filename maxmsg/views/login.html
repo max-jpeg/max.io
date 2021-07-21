@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Max.io-Log</title>
+
+    <!--
+        source sans pro link
+    -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap" rel="stylesheet">
+
+    <!--
+        Cutive mono link:
+    -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@1,200;1,500&display=swap" rel="stylesheet">
+    
+    <!--
+        Amatic SC link:
+    -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC&display=swap" rel="stylesheet">  
+
+    <style>
+        body { 
+            background-color: rgb(255, 255, 255);
+            overflow-x: hidden;
+            width: 100vw;
+            min-height: 100vh;
+            max-height: fit-content;
+            margin: 0;
+            /*padding-b ottom: 3rem; */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        }
+
+      
+
+        #container {
+            background-color: rgb(255, 255, 255);
+            width: 65%;
+            padding: 2vw;
+            margin: 0 auto;
+            min-height: 100vh;
+            max-height: fit-content;
+        }
+
+        #container p {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 1.3vw;
+            color: rgb(0, 0, 0);
+        }
+
+        .title { 
+            font-family: 'Amatic SC', cursive;
+
+            font-size: 5vw;
+            margin: 0;
+            padding-top: 1%;
+            /*text-decoration: underline;*/
+        }
+
+        .subtitle { 
+            font-family: 'Source Sans Pro', sans-serif;
+            margin-top: 0;
+            font-size: 4vh;
+            margin-bottom: 1%;
+            color: rgb(124, 124, 124);
+
+        }
+
+        #form { 
+            border-radius: 0.2rem; 
+            background: rgba(0, 0, 0, 0.15); 
+            padding: 0.25rem; 
+            margin: auto;
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+            height: fit-content; 
+            box-sizing: border-box; 
+            backdrop-filter: blur(10px); 
+        }
+
+        input { 
+            font-family: 'Source Sans Pro', sans-serif;
+            border: 1px solid;
+            padding: 0 1rem; 
+            flex-grow: 1; 
+            border-radius: 0.2rem; 
+            font-size: 16px;
+            height: 1.65rem;
+
+        }
+
+        input:focus { 
+            outline: none; 
+        }
+
+        #form > p {
+            text-align: center;
+            padding: 0;
+            margin: 0;
+            color: rgb(0, 0, 0);
+            font-size: 1.3rem;
+        }
+
+        #form > button { 
+            font-family: 'Source Sans Pro', sans-serif;
+            background: #333; 
+            border: none; 
+            padding: 0 1rem; 
+            margin: 0.25rem 0;
+            border-radius: 3px; 
+            outline: none; 
+            font-size: 16.5px;
+            height: 1.95rem;
+            color: #fff; 
+
+        }
+
+        #form > button:hover {
+            font-size: 16px;
+            border: 1px solid rgb(0, 166, 255);
+            cursor: pointer;
+        }
+
+    </style>
+  </head>
+
+  <body>
+  
+
+    <div id="container">
+
+
+        <h1 class="title">Welcome to Max.io!</h1>
+        <!--<h1 class="subtitle"><i>About:</i></h2>-->
+        
+        <p>
+            Max.io is a Node.js/Socket.io application created by Max Cooper (although this is hard to believe). 
+            Max.io provides an easy to use, simplistic chat application that supports 
+            private & public chatroom connections that allow you to communicate in real time 
+            to other clients via web-socket communication. 
+        </p>
+
+        
+        <form id="form" action="/rooms" method="GET">
+
+
+            <input id="userSelectInp" name="user" autocomplete="off" placeholder="Select a username" required="required"/>
+            <!--  <button id="userSelectBtn">Set Username</button>-->
+
+            <br>
+
+            <input id="roomSelectInp" name="room" autocomplete="off" placeholder="Select a room" required="required"/>
+
+            <input  id="c" name="c" type="hidden" value="">
+            <br>
+
+            <button id="joinRoomBtn">Join Room</button>
+            
+            <p>or</p>    
+
+            <button id="createRoomBtn" onclick>Create new room</button>
+            
+            </form>
+
+            <!--
+            <h1 class="subtitle">
+                <i>About:</i>
+            </h1>
+            -->
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        var socket = io();
+        
+        var form = document.getElementById("form");
+
+        var userSelectInp = document.getElementById("userSelectInp");
+        var roomSelectInp = document.getElementById("roomSelectInp");
+        var c = document.getElementById("c");
+
+        var joinRoomBtn = document.getElementById("joinRoomBtn");
+        var createRoomBtn = document.getElementById("createRoomBtn");
+
+    
+
+        var currentID = "";
+
+        var currentUser = "";
+        var currentRoom = "";
+
+        var userValid = false;
+
+
+        socket.on('connect', () => {
+            currentID = socket.id;
+            console.log(currentID);
+        });
+
+
+
+        joinRoomBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            c.value = false;
+
+            if (form.user.value && form.room.value) {
+                socket.emit("checkFormValidityJoin", {
+                    user: form.user.value,
+                    room: form.room.value
+                });
+            }
+            else if (!form.user.value && form.room.value) {
+                form.user.placeholder = 'This Field is\'nt optional!'
+            }
+            else if (form.user.value && !form.room.value) {
+                form.room.placeholder = 'This Field is\'nt optional!'
+            }
+            
+        });
+
+        createRoomBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            c.value = true;
+
+            if (form.user.value && form.room.value) {
+                socket.emit("checkFormValidityCreate", {
+                    user: form.user.value,
+                    room: form.room.value
+                });
+            }
+            else if (!form.user.value && form.room.value) {
+                form.user.placeholder = 'This Field is\'nt optional!'
+            }
+            else if (form.user.value && !form.room.value) {
+                form.room.placeholder = 'This Field is\'nt optional!'
+            }
+            
+        });
+
+        socket.on('formValid', () => {
+            form.submit();
+        })
+
+        /*
+        socket.on('formValidC', (room) => {
+            form.submit();
+        });
+        */
+
+        socket.on('userNotValid', () => {
+            form.user.value = "";
+
+            form.user.placeholder = "This username is already in use, please chose another."
+        });
+
+        socket.on('roomNotValidJ', () => {
+            form.room.value = "";
+
+            form.room.placeholder = "This room doesn't exist! Create or check for typos.";
+        });
+
+        socket.on('roomNotValidC', () => {
+            form.room.value = "";
+
+            form.room.placeholder = "This room is already in use, please chose another name.";
+        });
+
+        socket.on('noneValid', () => {
+            form.user.value = "";
+            form.room.value = "";
+
+            form.user.placeholder = "This username is already in use, please choose another.";
+            form.room.placeholder = "This room is already in use, please chose another.";
+        });
+
+
+        
+    </script>
+
+  </body>
+</html>
