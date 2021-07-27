@@ -12,8 +12,8 @@ const { query } = require('express');
 // my modules:
 const {addUser, queryUser, removeUser, printUsers, getID, kickUser} = require('./utils/userTools.js');
 const {addRoom, queryRoom, printRooms} = require('./utils/roomTools.js');
-const {checkCommands} = require('./utils/commands.js');
-
+//const {checkCommands} = require('./utils/commands.js');
+//^^^^ not in use currently
 
 app.use(express.static('public'));
 app.set('views', path.join(__dirname, 'views'));
@@ -101,7 +101,6 @@ io.on('connect', socket => {
         */
 
         //console.log('loading room page');
-
         //addUser(self, user);
 
         res.sendFile('index.html', {
@@ -136,18 +135,26 @@ io.on('connect', socket => {
     */
 
     socket.on('init', (data) => {
-        addUser(data.currentUser);
-        console.log(`createUser ${data.currentUser}`);
-        
-        socket.join(data.currentRoom);
-        console.log(`joinUser ${data.currentUser} ${data.currentRoom}`);
+        addUser(socket.id, data.currentUser);
+        console.log(`createUser ${data.currentUser}`)
 
-        if (data.c == true) addRoom(data.room);
-    })
+        console.log("before new room append: " + printRooms());
+
+        if (data.c == "true") {
+            addRoom(data.currentRoom);
+            socket.join(data.currentRoom);
+            console.log("after new room append: " + printRooms());  
+        }
+        else if (data.c == "false") {
+            socket.join(data.currentRoom);
+        }
+
+        console.log(`joinUser ${data.currentUser} ${data.currentRoom}`);
+    });
 
     socket.on('chat message', (msgData) => {
         //console.log('g');
-        /*
+        /* not being used while commands arent set up
         var cmdQuery = checkCommands(msgData.msg);
 
         if (cmdQuery.query !== false) {
